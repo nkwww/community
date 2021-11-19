@@ -80,7 +80,7 @@
     <appender name="FILE"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 日志日常打印文件 -->
-        <file>logs/mylog.log</file>
+        <file>C:/Users/NieKaiwang/Desktop/community/logs/mylog.log</file>
         <!-- 配置日志所生成的目录以及生成文件名的规则 在logs/mylog-2017-06-31.0.log.zip -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>logs/mylog-%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
