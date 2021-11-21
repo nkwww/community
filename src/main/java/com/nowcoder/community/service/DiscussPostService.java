@@ -47,4 +47,9 @@ public class DiscussPostService {
     public DiscussPost findDiscussPostById(int id) {
         return discussPostMapper.selectDiscussPostById(id);
     }
+
+    // 帖子更新冗余存储的评论数目
+    public int updateCommentCount(int discussPostId, int commentCount) {
+        return discussPostMapper.updateCommentCount(discussPostId, commentCount);
+    }
 }
