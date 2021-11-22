@@ -51,4 +51,9 @@ public class HomeController {
         return "/index";
     }
 
+    // 500错误 跳转页面路由
+    @RequestMapping(path = "/error", method = RequestMethod.POST)
+    public String getErrorPage() {
+        return "/error/500";
+    }
 }
