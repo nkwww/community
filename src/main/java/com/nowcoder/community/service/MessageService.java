@@ -2,13 +2,18 @@ package com.nowcoder.community.service;
 
 import com.nowcoder.community.dao.MessageMapper;
 import com.nowcoder.community.entity.Message;
+import com.nowcoder.community.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 
 @Service
 public class MessageService {
+
+    @Autowired
+    private SensitiveFilter sensitiveFilter;
 
     @Autowired
     private MessageMapper messageMapper;
@@ -36,5 +41,18 @@ public class MessageService {
     // 查询未读私信的数量,包括总的未读私信，和某个会话的未读私信
     public int findLetterUnreadCount(int userId, String conversationId) {
         return messageMapper.selectLetterUnreadCount(userId, conversationId);
+    }
+
+    // 添加私信
+    public int addMessage(Message message) {
+        // 过滤敏感词
+        message.setContent(HtmlUtils.htmlEscape(message.getContent()));
+        message.setContent(sensitiveFilter.filter(message.getContent()));
+        return messageMapper.insertMessage(message);
+    }
+
+    // 更改私信状态
+    public int readMessage(List<Integer> ids) {
+        return messageMapper.updateStatus(ids, 1);
     }
 }

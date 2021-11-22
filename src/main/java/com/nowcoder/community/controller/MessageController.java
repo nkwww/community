@@ -5,6 +5,7 @@ import com.nowcoder.community.entity.Page;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.MessageService;
 import com.nowcoder.community.service.UserService;
+import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,11 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class MessageController {
@@ -82,7 +81,26 @@ public class MessageController {
         // 私信目标
         model.addAttribute("target", getLetterTarget(conversationId));
 
+        // 将未读设置已读
+        List<Integer> ids = getLetterIds(letterList);
+        if (!ids.isEmpty()) {
+            messageService.readMessage(ids);
+        }
+
         return "/site/letter-detail";
+    }
+
+    // 得到集合中未读消息的id列表
+    private List<Integer> getLetterIds(List<Message> letterList) {
+        ArrayList<Integer> ids = new ArrayList<>();
+
+        for (Message message : letterList) {
+             if (hostHolder.getUser().getId() == message.getToId() && message.getStatus() == 0) {
+                 ids.add(message.getId());
+             }
+        }
+
+        return ids;
     }
 
     private User getLetterTarget(String conversationId) {
@@ -95,5 +113,32 @@ public class MessageController {
         } else {
             return userService.findUserById(id0);
         }
+    }
+
+    // 异步发送私信接口
+    @RequestMapping(path = "/letter/send", method = RequestMethod.POST)
+    @ResponseBody // 异步
+    public String sendLetter(String toName, String content) {
+        User user = userService.findUserByName(toName);
+        if (user == null) {
+            return CommunityUtil.getJsonString(1, "目标用户不存在！");
+        }
+
+        Message message = new Message();
+        message.setContent(content);
+        message.setFromId(hostHolder.getUser().getId());
+        message.setCreateTime(new Date());
+        message.setToId(user.getId());
+        String conversationId;
+        if (hostHolder.getUser().getId() < user.getId()) {
+            conversationId = hostHolder.getUser().getId() + "_" + user.getId();
+        } else {
+            conversationId = user.getId() + "_" + hostHolder.getUser().getId();
+        }
+        message.setConversationId(conversationId);
+        messageService.addMessage(message);
+
+        // 报错统一处理异常
+        return CommunityUtil.getJsonString(0);
     }
 }

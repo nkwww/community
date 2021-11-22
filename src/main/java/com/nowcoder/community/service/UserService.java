@@ -227,4 +227,9 @@ public class UserService implements CommunityConstant { // 使用常量的类实
         userMapper.updatePassword(user.getId(), CommunityUtil.md5(newPassword + user.getSalt()));
         return map;
     }
+
+    // 根据用户名查询用户
+    public User findUserByName(String username) {
+        return userMapper.selectByName(username);
+    }
 }
