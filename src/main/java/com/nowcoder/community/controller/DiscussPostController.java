@@ -99,12 +99,12 @@ public class DiscussPostController implements CommunityConstant {
             commentVo.put("comment", comment);
             commentVo.put("user", userService.findUserById(comment.getUserId()));
             // 查询评论点赞数
-            likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, comment.getEntityId());
+            likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, comment.getId());
             commentVo.put("likeCount", likeCount);
             // 查询当前用户对该评论的点赞状态
             // 当前用户未登录则点赞状态为0，否则从redis中查询
             likeStatus = (hostHolder.getUser() == null) ? 0 :
-                    likeService.findEntityLikeStatus(ENTITY_TYPE_COMMENT, discussPostId, hostHolder.getUser().getId());
+                    likeService.findEntityLikeStatus(ENTITY_TYPE_COMMENT, comment.getId(), hostHolder.getUser().getId());
             commentVo.put("likeStatus", likeStatus);
 
             // 查询回复
@@ -123,12 +123,12 @@ public class DiscussPostController implements CommunityConstant {
                 replyVo.put("target", target);
                 // 回复点赞信息
                 // 查询回复点赞数
-                likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, reply.getEntityId());
+                likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, reply.getId());
                 replyVo.put("likeCount", likeCount);
                 // 查询当前用户对该回复的点赞状态
                 // 当前用户未登录则点赞状态为0，否则从redis中查询
                 likeStatus = (hostHolder.getUser() == null) ? 0 :
-                        likeService.findEntityLikeStatus(ENTITY_TYPE_COMMENT, reply.getEntityId(), hostHolder.getUser().getId());
+                        likeService.findEntityLikeStatus(ENTITY_TYPE_COMMENT, reply.getId(), hostHolder.getUser().getId());
                 replyVo.put("likeStatus", likeStatus);
                 replyVoList.add(replyVo);
             }
