@@ -46,11 +46,11 @@ public class LikeService {
                 // 开启事务
                 redisOperations.multi();
                 if (isUnlike) {
-                    redisTemplate.opsForSet().remove(entityLikeKey, userId);
-                    redisTemplate.opsForValue().decrement(userLikeKey);
+                    redisOperations.opsForSet().remove(entityLikeKey, userId);
+                    redisOperations.opsForValue().decrement(userLikeKey);
                 } else {
-                    redisTemplate.opsForSet().add(entityLikeKey, userId);
-                    redisTemplate.opsForValue().increment(userLikeKey);
+                    redisOperations.opsForSet().add(entityLikeKey, userId);
+                    redisOperations.opsForValue().increment(userLikeKey);
                 }
                 return redisOperations.exec();
             }
