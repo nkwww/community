@@ -31,6 +31,15 @@ public class ServiceLogAspect {
 
         // 使用Request工具类 获取用户ip
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        /**
+         * 修改空指针报错
+         * 不通过Controller访问的就不记录日志
+         */
+        if (attributes == null) {
+            return;
+        }
+        // 在使用Kafka之前，所有对service的访问都是通过controller；
+        // 使用Kafka之后，通过EventProducer访问了 MessageService，下面这条语句会报空指针异常
         HttpServletRequest request = attributes.getRequest();
         String ip = request.getRemoteHost();
         String now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
