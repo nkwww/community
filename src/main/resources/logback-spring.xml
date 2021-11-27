@@ -20,6 +20,20 @@
     <!--    com.ztev.audit.dao是本项目的dao层的包，把这个包的打印日志级别调成 DEBUG级别可以看到sql执行-->
     <logger name="com.nowcoder.community.dao" level="DEBUG"/>
 
+    <!-- 彩色日志 -->
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <!-- 彩色日志格式 -->
+    <property name="FORMAT" value="${FORMAT:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
+    <!-- Console 输出设置 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${FORMAT}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+    </appender>
 
     <!--文件输出的格式设置 -->
     <appender name="FILE"

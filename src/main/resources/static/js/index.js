@@ -5,6 +5,14 @@ $(function(){
 function publish() {
 	$("#publishModal").modal("hide");
 
+	// 如果Spring security启用防csrf攻击，则每个异步请求都要进行如下操作，太麻烦，故关闭 防csrf攻击
+	// 发送Ajax请求之前，将CSRF令牌设置到请求的消息头中
+	// var token = $("meta[name='_csrf']").attr("content");
+	// var header = $("meta[name='_csrf_header']").attr("content");
+	// $(document).ajaxSend(function (e, xhr, options) {
+	// 	xhr.setRequestHeader(header, token);
+	// })
+
 	// 获取标题和内容
 	var title = $("#recipient-name").val();
 	var content = $("#message-text").val();
