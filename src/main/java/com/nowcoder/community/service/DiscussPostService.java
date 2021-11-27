@@ -52,4 +52,14 @@ public class DiscussPostService {
     public int updateCommentCount(int discussPostId, int commentCount) {
         return discussPostMapper.updateCommentCount(discussPostId, commentCount);
     }
+
+    // 修改帖子类型 普通/置顶
+    public int updateType(int id, int type) {
+        return discussPostMapper.updateType(id, type);
+    }
+
+    // 修改帖子状态 加精、拉黑
+    public int updateStatus(int id, int status) {
+        return discussPostMapper.updateStatus(id, status);
+    }
 }
