@@ -1,6 +1,7 @@
 package com.nowcoder.community.config;
 
 import com.nowcoder.community.quartz.AlphaJob;
+import com.nowcoder.community.quartz.PostScoreRefreshJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +41,30 @@ public class QuartzConfig {
         simpleTriggerFactoryBean.setName("alphaTrigger");
         simpleTriggerFactoryBean.setGroup("alphaTriggerGroup");
         simpleTriggerFactoryBean.setRepeatInterval(3000);   // 触发频率
+        simpleTriggerFactoryBean.setJobDataMap(new JobDataMap());
+        return simpleTriggerFactoryBean;
+    }
+
+    // 刷题帖子分数的定时任务
+     @Bean
+    public JobDetailFactoryBean postScoreRefreshJobDetail() {
+        JobDetailFactoryBean jobDetailFactoryBean = new JobDetailFactoryBean();
+        jobDetailFactoryBean.setJobClass(PostScoreRefreshJob.class);
+        jobDetailFactoryBean.setName("postScoreRefreshJob");
+        jobDetailFactoryBean.setGroup("communityJobGroup");
+        jobDetailFactoryBean.setDurability(true);   // 任务是持久的保存吗
+        jobDetailFactoryBean.setRequestsRecovery(true); // 任务是否可恢复
+        return jobDetailFactoryBean;
+    }
+
+    // 配置Trigger触发器
+    @Bean
+    public SimpleTriggerFactoryBean postScoreRefreshTrigger(JobDetail postScoreRefreshJobDetail) {
+        SimpleTriggerFactoryBean simpleTriggerFactoryBean = new SimpleTriggerFactoryBean();
+        simpleTriggerFactoryBean.setJobDetail(postScoreRefreshJobDetail);
+        simpleTriggerFactoryBean.setName("postScoreRefreshTrigger");
+        simpleTriggerFactoryBean.setGroup("communityTriggerGroup");
+        simpleTriggerFactoryBean.setRepeatInterval(1000 * 60 * 30);   // 触发频率 30min
         simpleTriggerFactoryBean.setJobDataMap(new JobDataMap());
         return simpleTriggerFactoryBean;
     }
