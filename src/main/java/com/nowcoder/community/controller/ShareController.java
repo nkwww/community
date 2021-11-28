@@ -40,6 +40,10 @@ public class ShareController implements CommunityConstant {
     @Value("${wk.image.storage}")
     private String wkImageStorage;
 
+    @Value("${tencent.baseUrl}")
+    private String baseUrl;
+
+    // 重构生成长图接口
     @RequestMapping(path = "/share", method = RequestMethod.GET)
     @ResponseBody
     public String share(String htmlUrl) {
@@ -59,10 +63,12 @@ public class ShareController implements CommunityConstant {
 
         // 返回长图访问路径
         Map<String, Object> map = new HashMap<>();
-        map.put("shareUrl", domain + contextPath + "/share/image/" + fileName);
+        String dirName = "/share/";
+        map.put("shareUrl", baseUrl + dirName + fileName + ".png");
         return CommunityUtil.getJsonString(0, null, map);
     }
 
+    @Deprecated
     @RequestMapping(path = "/share/image/{fileName}", method = RequestMethod.GET)
     public void getShareImage(@PathVariable("fileName") String fileName, HttpServletResponse response) {
         if (StringUtils.isBlank(fileName)) {

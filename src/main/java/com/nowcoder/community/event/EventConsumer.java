@@ -8,6 +8,12 @@ import com.nowcoder.community.service.DiscussPostService;
 import com.nowcoder.community.service.ElasticsearchService;
 import com.nowcoder.community.service.MessageService;
 import com.nowcoder.community.util.CommunityConstant;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.ClientConfig;
+import com.qcloud.cos.auth.BasicCOSCredentials;
+import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.model.PutObjectRequest;
+import com.qcloud.cos.region.Region;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,6 +46,22 @@ public class EventConsumer implements CommunityConstant {
 
     @Value("${wk.image.command}")
     private String wkImageCommand;
+
+    @Value("${tencent.secretId}")
+    private String secretId;
+
+    @Value("${tencent.secretKey}")
+    private String secretKey;
+
+    @Value("${tencent.bucket}")
+    private String bucket;
+
+    @Value("${tencent.region}")
+    private String region;
+
+    @Value("${tencent.baseUrl}")
+    private String baseUrl;
+
 
     @KafkaListener(topics = {TOPIC_COMMENT, TOPIC_FOLLOW, TOPIC_LIKE})
     public void handleCommentMessage(ConsumerRecord record) {
@@ -109,7 +132,7 @@ public class EventConsumer implements CommunityConstant {
         elasticsearchService.deleteDiscussPost(event.getEntityId());
     }
 
-    // 消费分享事件
+    // 重构消费分享事件
     @KafkaListener(topics = {TOPIC_SHARE})
     public void handleShareMessage(ConsumerRecord record) {
         if (record == null || record.value() == null) {
@@ -125,16 +148,41 @@ public class EventConsumer implements CommunityConstant {
         String htmlUrl = (String) event.getData().get("htmlUrl");
         String fileName = (String) event.getData().get("fileName");
         String suffix = (String) event.getData().get("suffix");
+        String dirName = "/share/";
 
         String cmd = wkImageCommand + " --quality 75 "
                 + htmlUrl + " " + wkImageStorage + "/" + fileName + suffix;
 
-        // 执行命令
+        // 1 初始化用户身份信息(secretId, secretKey)
+        COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
+        // 2 设置bucket的区域, COS地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
+        ClientConfig clientConfig = new ClientConfig(new Region(region));
+        // 3 生成cos客户端
+        COSClient cosclient = new COSClient(cred, clientConfig);
         try {
-            Runtime.getRuntime().exec(cmd);
-            logger.info("生成长图成功: " + cmd);
-        } catch (IOException e) {
+            // 执行命令
+            Process exec = Runtime.getRuntime().exec(cmd);
+            exec.waitFor();
+            logger.info("本地生成长图成功: " + cmd);
+            File localFile = new File(wkImageStorage + "/" + fileName + suffix);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, dirName + fileName + suffix, localFile);
+            cosclient.putObject(putObjectRequest);
+            //tencent.baseUrl= https://community-1301810288.cos.ap-shanghai.myqcloud.com
+            logger.info("长图上传成功： " + baseUrl + dirName + fileName);
+        } catch (IOException | InterruptedException e) {
             logger.error("生成长图失败: " + e.getMessage());
+        } finally {
+            // 关闭客户端(关闭后台线程)
+            cosclient.shutdown();
+        }
+    }
+
+    // 启用定时器，监视该图片，一旦生成了，则上传至七牛云
+    class UploadTask implements Runnable {
+
+        @Override
+        public void run() {
+
         }
     }
 }

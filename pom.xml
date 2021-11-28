@@ -104,7 +104,19 @@
 			<artifactId>spring-boot-starter-quartz</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.qcloud</groupId>
+			<artifactId>cos_api</artifactId>
+			<version>5.6.18</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.tencent.cloud</groupId>
+			<artifactId>cos-sts-java</artifactId>
+			<version>3.0.5</version>
+		</dependency>
 	</dependencies>
+
 
 	<build>
 		<plugins>
