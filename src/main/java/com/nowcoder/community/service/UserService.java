@@ -124,6 +124,9 @@ public class UserService implements CommunityConstant { // 使用常量的类实
     public int activation(int userId, String code) {
         // 查询用户是否存在
         User user = userMapper.selectById(userId);
+       if (user == null) {
+           return ACTIVATION_FAILURE;
+       }
         if (user.getStatus() == 1) {
             // 用户是否激活
             return ACTIVATION_REPEAT;

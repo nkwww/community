@@ -18,6 +18,7 @@ public class ExceptionAdvice {
 
     private static final Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
 
+    // ExceptionHandler 处理指定的异常
     @ExceptionHandler({Exception.class})
     public void handlerException(Exception e, HttpServletRequest request, HttpServletResponse response) throws IOException {
         logger.error("服务器发生异常： " + e.getMessage());

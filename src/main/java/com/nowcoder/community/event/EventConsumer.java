@@ -176,13 +176,4 @@ public class EventConsumer implements CommunityConstant {
             cosclient.shutdown();
         }
     }
-
-    // 启用定时器，监视该图片，一旦生成了，则上传至七牛云
-    class UploadTask implements Runnable {
-
-        @Override
-        public void run() {
-
-        }
-    }
 }

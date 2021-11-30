@@ -51,7 +51,7 @@ public class LikeController implements CommunityConstant {
         map.put("likeCount", likeCount);
         map.put("likeStatus", likeStatus);
 
-        // 触发点赞事件
+        // 点赞后，该用户对该评论的点赞状态为1：触发点赞事件，发送系统通知
         if (likeStatus == 1) {
             Event event = new Event()
                     .setTopic(TOPIC_LIKE)
@@ -63,7 +63,7 @@ public class LikeController implements CommunityConstant {
             eventProducer.fireEvent(event);
         }
 
-        // 对帖子点赞
+        // 对帖子点赞，更新帖子分数
         if (entityType == ENTITY_TYPE_POST) {
             // 计算帖子分数
             String redisKey = RedisKeyUtil.getPostScoreKey();
