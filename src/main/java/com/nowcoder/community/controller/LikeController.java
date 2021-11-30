@@ -33,7 +33,7 @@ public class LikeController implements CommunityConstant {
     private RedisTemplate<String, Object> redisTemplate;
 
     @ResponseBody
-    @RequestMapping(path = "like", method = RequestMethod.POST)
+    @RequestMapping(path = "/like", method = RequestMethod.POST)
     public String like(int entityType, int entityId, int entityUserId, int postId) {
         // 后续用Spring Security 重构
         User user = hostHolder.getUser();

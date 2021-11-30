@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                         "/comment/add/**",
                         "/letter/**",
                         "/notice/**",
-                        "like",
+                        "/like",
                         "/follow",
                         "/unfollow"
                 )
@@ -59,10 +59,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                 .and().csrf().disable();
 
         // 处理越权操作
-
         // 同步请求 越权 返回 报错页面
         // 异步请求 越权 返回 json串 提示
-
         http.exceptionHandling()
                 .authenticationEntryPoint(new AuthenticationEntryPoint() {
                     // 没有登录
@@ -79,7 +77,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                             // 同步请求
                             response.sendRedirect(request.getContextPath() + "/login"); // 重定向默认请求方式是GET
                         }
-
                     }
                 })
                 .accessDeniedHandler(new AccessDeniedHandler() {

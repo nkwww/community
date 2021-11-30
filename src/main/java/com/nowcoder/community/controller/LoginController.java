@@ -24,7 +24,6 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Map;
@@ -138,7 +137,6 @@ public class LoginController implements CommunityConstant {
             model.addAttribute("codeMsg", "验证码不正确!");
             return "/site/login";
         }
-
         // 检查账号、密码
         int expiredSeconds = rememberMe ? REMEMBER_EXPIRED_SECONDS : DEFAULT_EXPIRED_SECONDS;
         Map<String, Object> result = userService.login(username, password, expiredSeconds);

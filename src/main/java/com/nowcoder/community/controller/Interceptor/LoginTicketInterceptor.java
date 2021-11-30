@@ -43,7 +43,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
                 // 考虑浏览器 - 服务器是多对一的环境，我们需要考虑多线程的情况
                 // 使用ThreadLocal使得每个线程隔离存储User
                  hostHolder.setUser(user);
-                 // 构建用户认证的结果，并存入SecurityContext，以便于 security 进行授权
+                 // 构建用户认证的结果，并存入SecurityContext，以便于 security 进行授权;
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                         user, user.getPassword(), userService.getAuthorities(user.getId()));
                 SecurityContextHolder.setContext(new SecurityContextImpl(authentication));
