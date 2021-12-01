@@ -44,6 +44,7 @@ public class DiscussPostService {
         postListCache = Caffeine.newBuilder()
                 .maximumSize(maxSize)
                 .expireAfterWrite(expireSeconds, TimeUnit.SECONDS)
+                //默认的数据加载实现，当调用get取值的时候，如果key没有对应的值，就调用这个方法进行加载
                 .build(new CacheLoader<String, List<DiscussPost>>() {
                     @Override
                     public @Nullable List<DiscussPost> load(@NonNull String key) throws Exception {
@@ -67,6 +68,7 @@ public class DiscussPostService {
         postRowsCache = Caffeine.newBuilder()
                 .maximumSize(maxSize)
                 .expireAfterWrite(expireSeconds, TimeUnit.SECONDS)
+                //默认的数据加载实现，当调用get取值的时候，如果key没有对应的值，就调用这个方法进行加载
                 .build(new CacheLoader<Integer, Integer>() {
                     @Override
                     public @Nullable Integer load(@NonNull Integer key) throws Exception {
@@ -85,7 +87,7 @@ public class DiscussPostService {
 
 
     public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit, int orderMode) {
-        // 缓存热门帖子和未登录时候的首页帖子
+        // 缓存热门首页帖子
         if (userId == 0 && orderMode == 1) {
             return postListCache.get(offset + ":" + limit);
         }
