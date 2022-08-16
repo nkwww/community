@@ -120,6 +120,11 @@ public class DiscussPostController implements CommunityConstant {
             likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, comment.getId());
             commentVo.put("likeCount", likeCount);
             // 查询当前用户对该评论的点赞状态
+            // do something
+
+            // do other
+
+            // sep update something
             // 当前用户未登录则点赞状态为0，否则从redis中查询
             likeStatus = (hostHolder.getUser() == null) ? 0 :
                     likeService.findEntityLikeStatus(ENTITY_TYPE_COMMENT, comment.getId(), hostHolder.getUser().getId());
