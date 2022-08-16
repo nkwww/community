@@ -132,6 +132,8 @@ public class DiscussPostController implements CommunityConstant {
 
             // fix bug2
 
+            // fix bug 3
+
             // sep update something
             // 当前用户未登录则点赞状态为0，否则从redis中查询
             likeStatus = (hostHolder.getUser() == null) ? 0 :
