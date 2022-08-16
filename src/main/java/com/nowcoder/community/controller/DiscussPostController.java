@@ -110,7 +110,6 @@ public class DiscussPostController implements CommunityConstant {
                 findCommentByEntity(ENTITY_TYPE_POST, discussPost.getId(), page.getOffset(), page.getLimit());
 
         // userId转user对象
-        // 评论VO列表
         List<Map<String, Object>> commentVoList = new ArrayList<>();
         for (Comment comment : commentList) {
             // 一个评论的VO
