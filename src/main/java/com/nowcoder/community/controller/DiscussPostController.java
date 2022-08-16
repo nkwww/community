@@ -122,7 +122,13 @@ public class DiscussPostController implements CommunityConstant {
             // 查询当前用户对该评论的点赞状态
             // do something
 
-            // do other
+            // do otherasd
+
+            // fix bug
+
+            // fix bug
+
+            // fix bug
 
             // sep update something
             // 当前用户未登录则点赞状态为0，否则从redis中查询
